@@ -1,0 +1,30 @@
+{
+    "serverlessConsole.services": [
+        {
+            "type": "cloudformation",
+            "title": "lambda",
+            "timeOffsetInMs": 0,
+            "awsProfile": "items-training",
+            "stacks": [
+                {
+                    "region": "us-east-1",
+                    "stackName": "alegra-pets-lambdaStack",
+                    "stage": "dev"
+                }
+            ]
+        },
+        {
+            "type": "cloudformation",
+            "title": "apiGW",
+            "timeOffsetInMs": 0,
+            "awsProfile": "items-training",
+            "stacks": [
+                {
+                    "region": "us-east-1",
+                    "stackName": "alegra-pets-ApiGWStack",
+                    "stage": "dev"
+                }
+            ]
+        }
+    ]
+}
