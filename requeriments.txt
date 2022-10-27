@@ -21,3 +21,12 @@ Requerimientos técnicos:
     Cuando se adopte una mascota, se debe emitir un evento de SNS llamado "pet-happy" que notifique al correo de tu líder la adopción de dicha mascota. Una mascota será considerada "adoptada" cuando el estado de la mascota sea "happy".         //T
 
     Documentar toda la API haciendo uso de swagger          //T
+
+
+
+
+
+    // verificar que se borre un parametro con un id existente
+    verificar funcionamiento de entity-search
+    verificar que no se guarde un pet con un id de entidad falsa
+    verificar en general todos los mensajes de error

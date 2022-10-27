@@ -21,11 +21,13 @@ exports.handler = async (event)=>{
 }
 
 async function savePet(pet){
+    const { state, ...obj} = pet;
     const params = {
         TableName,
         Item: {
             id:uuid(),
-            ...pet
+            ...pet,
+            "state":"Sad"
         }
     }
     return await DynamoDB.put(params).promise()

@@ -6,8 +6,8 @@ const DynamoDB = new AWS.DynamoDB.DocumentClient();
 exports.handler = async (event)=>{
     const {petId} = event.pathParameters; //falta validar el body , solo parametros definidos
     const data = await searchById(petId);
-
-    if(!data.Items){
+    
+    if(!data.Items.length>0){
         return {
             statusCode:404,
             body: JSON.stringify({
