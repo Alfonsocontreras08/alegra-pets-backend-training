@@ -4,7 +4,7 @@ const AWS = require('aws-sdk');
 const DynamoDB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event)=>{
-    const {petId} = event.pathParameters; //falta validar el body , solo parametros definidos
+    const {petId} = event.pathParameters; 
     const data = await searchById(petId);
     
     if(!data.Items.length>0){

@@ -8,7 +8,7 @@ const { v4:uuid } = require("uuid");
 const DynamoDB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event)=>{
-    const body = JSON.parse(event.body); //falta validar el body , solo parametros definidos
+    const body = JSON.parse(event.body); 
     const data = await searchEntity(body.entity_owner);
     if(data.Items.length==0){
         return {
