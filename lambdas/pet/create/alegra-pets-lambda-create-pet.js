@@ -26,7 +26,7 @@ async function savePet(pet){
         TableName,
         Item: {
             id:uuid(),
-            ...pet,
+            ...obj,
             "state":"Sad"
         }
     }

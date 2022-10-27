@@ -8,8 +8,21 @@ const AWS = require('aws-sdk');
 const DynamoDB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event)=>{
-    const body = JSON.stringify(event.body); //falta validar el body , solo parametros definidos
-    await saveBodyS3();
+    const body = JSON.parse(event.body); //falta validar el body , solo parametros definidos
+    console.log(body.type,"type");
+    console.log(["user","foundation"].indexOf(body.type),"validation");
+    if(["user","foundation"].indexOf(body.type )<0){//validar que sea igual a user o foundation
+        return {
+            statusCode:400,
+            body: JSON.stringify({
+                ok:true,
+                body:"El parametro: type , tiene un valor invalido"
+            })
+        }
+    }
+    
+    await saveBodyS3(body);
+    
     const response = await saveEntity(body);
     console.log(response);
     return {

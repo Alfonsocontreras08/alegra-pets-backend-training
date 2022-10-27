@@ -1,15 +1,16 @@
-const AWS = required("aws-sdk");
-const TableNameEntity = process.env.TABLE_NAME_ENTITY;
+const AWS = require("aws-sdk");
+const TableNameEntity = process.env.TABLA_NAME;
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
-export const handler = async (event)=>{
+exports.handler = async (event)=>{
     
     const data = await searchAll();
+  
     return {
         statusCode:200,
         body:JSON.stringify({
             ok:true,
-            Entitys:data.Items
+            Entities:data.Items
         })
     }
 
