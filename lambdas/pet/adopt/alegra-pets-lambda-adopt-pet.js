@@ -43,7 +43,7 @@ exports.handler = async (event)=>{
     }
 }
 
-async function updatePet(pet,petId){
+async function adoptPet(pet,petId){
     const { state,id, ...obj} = pet;
     const params = {
         TableName: TablePet,

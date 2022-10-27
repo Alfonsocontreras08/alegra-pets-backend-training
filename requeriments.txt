@@ -10,8 +10,6 @@ Alegra requiere una plataforma que le permita a las fundaciones de animales gest
 
     Consultar todas las mascotas de una fundación.  //T
 
-    Actualizar la información de una mascota en el sistema. T
-
 Requerimientos técnicos:
 
     La API debe contar con una lambda authorizer que funcione como modelo de autenticación para acceder a cualquiera de los endpoints. //T

@@ -68,7 +68,7 @@ async function saveBodyS3(body){
         const s3Client = new S3Client({ region: REGION });
         const bucketParams = {
           Bucket: S3BucketName,
-          Key: `${new Date().toISOString()}-create-pet.json`,
+          Key: `${new Date().toISOString()}-update-pet.json`,
           Body: JSON.stringify(body),
         }
         
