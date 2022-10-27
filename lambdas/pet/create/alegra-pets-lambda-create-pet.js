@@ -23,7 +23,7 @@ exports.handler = async (event)=>{
     await savePet(body);
     
     return {
-        statusCode:200,
+        statusCode:201,
         body: JSON.stringify({
             ok:true,
             body:"Registrado Correctamente"

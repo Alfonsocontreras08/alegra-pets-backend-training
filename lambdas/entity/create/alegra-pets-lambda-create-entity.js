@@ -13,7 +13,7 @@ exports.handler = async (event)=>{
     console.log(["user","foundation"].indexOf(body.type),"validation");
     if(["user","foundation"].indexOf(body.type )<0){//validar que sea igual a user o foundation
         return {
-            statusCode:400,
+            statusCode:201,
             body: JSON.stringify({
                 ok:true,
                 body:"El parametro: type , tiene un valor invalido"
