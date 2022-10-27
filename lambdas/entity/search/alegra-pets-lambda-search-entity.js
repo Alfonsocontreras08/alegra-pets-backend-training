@@ -10,7 +10,7 @@ export const handler = async (event)=>{
         body:JSON.stringify({
             ok:true,
             Entitys:data.Items
-        });
+        })
     }
 
 } 
