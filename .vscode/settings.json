@@ -25,6 +25,19 @@
                     "stage": "dev"
                 }
             ]
+        },
+        {
+            "type": "cloudformation",
+            "title": "db",
+            "timeOffsetInMs": 0,
+            "awsProfile": "items-training",
+            "stacks": [
+                {
+                    "region": "us-east-1",
+                    "stackName": "alegra-pets-DynamoDBStack",
+                    "stage": "dev"
+                }
+            ]
         }
     ]
 }

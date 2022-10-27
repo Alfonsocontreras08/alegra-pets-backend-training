@@ -20,7 +20,9 @@ exports.handler = async (event)=>{
         if(petId){
             data = await searchById(petId);
         }else{
-            data = await searchCustom({ ColorEquals, raceEquals, nameEquals, typeOfPetEquals });
+            //data = await searchCustom({ ColorEquals, raceEquals, nameEquals, typeOfPetEquals });
+            data = await searchCustom2({ ColorEquals, raceEquals, nameEquals, typeOfPetEquals });
+            
         }
     }
 
@@ -41,7 +43,7 @@ exports.handler = async (event)=>{
             statusCode:200,
             body: JSON.stringify({
                 ok:true,
-                body: {pets: data.Items}
+                body:{pets: (data.Items != undefined)?data.Items:data  }
             })
         }    
     }
@@ -70,12 +72,49 @@ async function searchById(petId){
     .catch(e=>{throw new Error("Error: "+e)});
 }
 
+async function searchCustom2(queryParams){
+    const { ColorEquals, raceEquals, nameEquals, typeOfPetEquals } = queryParams;
+    let data = (await searchAll()).Items;
+    
+    if(ColorEquals!==null && ColorEquals!=="" && ColorEquals!==undefined){
+       data = searchInObject(data,"color",ColorEquals);
+       console.log(data,"despues de color");
+    }
+    if(raceEquals!==null && raceEquals!=="" && raceEquals!==undefined){
+        data = searchInObject(data,"race",raceEquals);
+    }
+    if(nameEquals!==null && nameEquals!==""  && nameEquals!==undefined){
+       data = searchInObject(data,"name",nameEquals);
+    }
+    if(typeOfPetEquals!==null && typeOfPetEquals!==""  && typeOfPetEquals!==undefined){
+        data = searchInObject(data,"type",typeOfPetEquals);
+    }
+    
+    return data;
+}
+
+function searchInObject(obj,param,value){
+    return obj.filter((e)=>{
+        if(e[param] == value){
+            return e;
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
 async function searchCustom(custom){
-    /*
-    custom = { ColorEquals, raceEquals, nameEquals, typeOfPetEquals }
-    */
     const {query, attributes } = makeQueryByParamsSended(custom);
-    console.log(attributes);
+    
     //console.log(ExpressionAttributeValuesParse(JSON.parse(attributes)));
     const params = {
         TableName,
@@ -88,45 +127,50 @@ async function searchCustom(custom){
     .catch(e=>{throw new Error("Error: "+e)});
 }
 
-function makeQueryByParamsSended(params){
+/*function makeQueryByParamsSended(params){
     let query= "";
-    let attributes =[];
-    let name, race ,color,type; 
+    let attribute ="";
     
-    const { ColorEquals, raceEquals, nameEquals, typeOfPetEquals } = params;
+    const { ColorEquals, raceEquals, nameEquals, typeOfPetEquals } = params; //cambiar esto por un switch case
     if(ColorEquals!==null && ColorEquals!=="" && ColorEquals!==undefined){
-        console.log('entra en color');
         query = sumQuery(query,"color",ColorEquals);
-        attributes.push({":color":ColorEquals});
+        attribute = sumParams(attribute,"color",ColorEquals);
     }
     if(raceEquals!==null && raceEquals!=="" && raceEquals!==undefined){
-        console.log('entra en rasa');
         query = sumQuery(query,"race",raceEquals);
-        attributes.push({":race":raceEquals});
+        attribute = sumParams(attribute,"race",raceEquals);
     }
     if(nameEquals!==null && nameEquals!==""  && nameEquals!==undefined){
-        console.log('entra en nombre');
         query = sumQuery(query,"name",nameEquals);
-        attributes.push({filter:":name",value:nameEquals});
+        attribute = sumParams(attribute,"name",nameEquals);
     }
     if(typeOfPetEquals!==null && typeOfPetEquals!==""  && typeOfPetEquals!==undefined){
-        console.log('entra en tipo');
         query = sumQuery(query,"type",typeOfPetEquals);
-        attributes.push({filter:":type",value:typeOfPetEquals});
+        attribute = sumParams(attribute,"type",typeOfPetEquals);
     }
+    console.log(attribute.split(","),"attribute");
     
-    return {query,attributes};
+    return {query,attribute};
 }
 
 
 function sumQuery(query,param,value){
     if(query==""){
-        return query=`:${param} = ${value}`;
+        query=`:${param} = ${value}`;
     }else{
         query+=`and :${param} = ${value}`;
     }
+    return query;
 }
 
+function sumParams(param, filter,value){ /*se que no se debe hacer asi pero no se como mas pasar parametros opcionales en una consulta de dynamo*//*
+    if(param==""){                      // es esto o traer todos los campos y filtrarlos con el backend.
+        param = `':${filter}': '${value}' `;
+    }else{
+        param += `, ':${filter}':'${value}'`;
+    }
+    return param;
+}
 
 function ExpressionAttributeValuesParse(attr){
     let expressions ="";
@@ -135,7 +179,7 @@ function ExpressionAttributeValuesParse(attr){
     });
     
     return expressions;
-}
+}*/
 
 
 /*
