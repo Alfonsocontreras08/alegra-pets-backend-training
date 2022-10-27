@@ -4,7 +4,6 @@ const S3BucketName = process.env.S3_Bucket_Name;
 const REGION = process.env.REGION || "us-east-1";
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const AWS = require('aws-sdk');
-const { v4:uuid } = require("uuid");
 const DynamoDB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event)=>{
@@ -33,33 +32,35 @@ exports.handler = async (event)=>{
         }
     }
     await saveBodyS3(body);
-    await updatePet(body);
+    await updatePet(body,petId);
     
     return {
         statusCode:200,
         body: JSON.stringify({
             ok:true,
-            body:"Registrado Correctamente"
+            body:"Actualizado Correctamente"
         })
     }
 }
 
-async function updatePet(pet){
-    const { state, ...obj} = pet;
+async function updatePet(pet,petId){
+    const { state,id, ...obj} = pet;
     const params = {
-        TableName:TablePet,
-        KeyConditionExpression: 'id = :petId ',
+        TableName: TablePet,
+        Key: { "id": petId },
+        UpdateExpression: "set race = :race, typePet = :type, #name_pet = :name, color = :color",
+        ExpressionAttributeNames: { "#name_pet": "name" },
         ExpressionAttributeValues: {
-            ':petId': petId
-        },
-        Item: {
-            id:uuid(),
-            ...obj,
-            "state":"Sad"
+            ":race": pet.race,
+            ":type": pet.typePet,
+            ":name": pet.name,
+            ":color": pet.color
         }
-    }
-    return await DynamoDB.put(params).promise()
+    };
+
+    return await DynamoDB.update(params).promise()
     .catch(e=>{throw new Error("Error :"+e)});
+    
 }
 
 async function saveBodyS3(body){
@@ -89,18 +90,17 @@ async function searchEntity(entityId){
     
     const params = {
         TableName:TableEntity,
-        KeyConditionExpression: 'id = :petId ',
+        KeyConditionExpression: 'id = :entityId ',
         ExpressionAttributeValues: {
-            ':petId': entityId
+            ':entityId': entityId
         }
     }
-    console.log(params,"params searchById");
     return await DynamoDB.query(params).promise()
     .catch(e=>{throw new Error("Error: "+e)});
 
 }
 
-async function searchPet(petid){
+async function searchPet(petId){
     
     const params = {
         TableName:TablePet,
@@ -109,7 +109,6 @@ async function searchPet(petid){
             ':petId': petId
         }
     }
-    console.log(params,"params searchById");
     return await DynamoDB.query(params).promise()
     .catch(e=>{throw new Error("Error: "+e)});
 
