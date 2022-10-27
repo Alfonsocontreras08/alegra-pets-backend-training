@@ -27,6 +27,6 @@ Requerimientos técnicos:
 
 
     // verificar que se borre un parametro con un id existente
-    verificar funcionamiento de entity-search
-    verificar que no se guarde un pet con un id de entidad falsa
-    verificar en general todos los mensajes de error
+    //verificar funcionamiento de entity-search
+    // verificar que no se guarde un pet con un id de entidad falsa
+    // verificar en general todos los mensajes de error

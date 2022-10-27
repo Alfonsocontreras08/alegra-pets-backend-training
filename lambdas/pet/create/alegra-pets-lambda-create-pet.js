@@ -1,4 +1,5 @@
-const TableName = process.env.TABLA_NAME;
+const TablePet = process.env.TABLA_NAME_PET;
+const TableEntity = process.env.TABLA_NAME_ENTITY;
 const S3BucketName = process.env.S3_Bucket_Name;
 const REGION = process.env.REGION || "us-east-1";
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
@@ -8,6 +9,16 @@ const DynamoDB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event)=>{
     const body = JSON.parse(event.body); //falta validar el body , solo parametros definidos
+    const data = await searchEntity(body.entity_owner);
+    if(data.Items.length==0){
+        return {
+            statusCode:400,
+            body:JSON.stringify({
+                ok:false,
+                body:"La Entidad No Se Encuentra Registrada"
+            })
+        }
+    }
     await saveBodyS3(body);
     await savePet(body);
     
@@ -23,7 +34,7 @@ exports.handler = async (event)=>{
 async function savePet(pet){
     const { state, ...obj} = pet;
     const params = {
-        TableName,
+        TableName:TablePet,
         Item: {
             id:uuid(),
             ...obj,
@@ -57,8 +68,19 @@ async function saveBodyS3(body){
     
 }
 
-async function ExistEntity(){
+async function searchEntity(entityId){
     
+    const params = {
+        TableName:TableEntity,
+        KeyConditionExpression: 'id = :petId ',
+        ExpressionAttributeValues: {
+            ':petId': entityId
+        }
+    }
+    console.log(params,"params searchById");
+    return await DynamoDB.query(params).promise()
+    .catch(e=>{throw new Error("Error: "+e)});
+
 }
 
 /*
