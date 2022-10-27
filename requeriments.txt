@@ -8,42 +8,16 @@
 Situación:
 Alegra requiere una plataforma que le permita a las fundaciones de animales gestionar a sus animales en adopción. Dicha plataforma necesita una API disponible al publico, con el dominio "almost-training.alegra.com" que le permita a los consumidores:
 
-    Crear una fundación. //D
-
-    Agregar una mascota al sistema. //D
-
-    Consultar una mascota por id.   //I falta enviar un error cuando no exista la mascota
-
     Consultar todas las mascotas de una fundación.  //T
-
-    Consultar todas las mascotas de una fundación permitiendo filtrar por: Tipo de animal, raza, nombre.    //T
-
-    Eliminar una mascota del sistema.   //T evitar que se pueda borrar si no es su mascota
 
     Actualizar la información de una mascota en el sistema. T
 
 Requerimientos técnicos:
 
-    La API debe tener asociado el dominio "{tuNombre}-training-pets.alegra.com".    //D
-
     La API debe contar con una lambda authorizer que funcione como modelo de autenticación para acceder a cualquiera de los endpoints. //T
-
-    El proyecto de backend debe utilizar layers para encapsular lógica compartida entre lambdas y paquetes de NPM.  //D
-
-    Intentar seguir la mayoría de buenas prácticas definidas: https://alegraweb.atlassian.net/wiki/spaces/XYZ/pages/2343043073/Buenas+practicas+Arquitectura+Serverless     //D
 
     La API puede ser consumida por multiples usuarios/fundaciones, cada usuario/fundación solo debería poder acceder a las mascotas de su fundación.        //T
 
-    El almacenamiento de la información debe ser en DynamoDb o RDS (según lo que definas con tu líder)      //D
-
-    El proyecto deberá contar con 2 repositorios, uno para la infraestructura y otro para el backend.       //D
-
-    El proyecto de infraestructura deberá realizarse con AWS CDK.                                           //D
-
-    El proyecto de backend deberá realizarse con Serverless Framework.                                      //D
-
     Cuando se adopte una mascota, se debe emitir un evento de SNS llamado "pet-happy" que notifique al correo de tu líder la adopción de dicha mascota. Una mascota será considerada "adoptada" cuando el estado de la mascota sea "happy".         //T
-
-    Se debe crear un bucket de S3 que almacene el JSON recibido en cada uno de los endpoints, es decir que cada vez que se haga un request a la API, se debe guardar el JSON del body en el bucket de s3.                                           //K
 
     Documentar toda la API haciendo uso de swagger          //T

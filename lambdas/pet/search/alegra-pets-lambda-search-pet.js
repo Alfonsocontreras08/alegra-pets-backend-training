@@ -27,7 +27,7 @@ exports.handler = async (event)=>{
     }
 
     
-    if(!data){
+    if(!data.Items){
         
         data = "No se Encontraron Resultados con los parametros ingresados"
         
@@ -78,7 +78,6 @@ async function searchCustom2(queryParams){
     
     if(ColorEquals!==null && ColorEquals!=="" && ColorEquals!==undefined){
        data = searchInObject(data,"color",ColorEquals);
-       console.log(data,"despues de color");
     }
     if(raceEquals!==null && raceEquals!=="" && raceEquals!==undefined){
         data = searchInObject(data,"race",raceEquals);
@@ -100,86 +99,6 @@ function searchInObject(obj,param,value){
         }
     });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-async function searchCustom(custom){
-    const {query, attributes } = makeQueryByParamsSended(custom);
-    
-    //console.log(ExpressionAttributeValuesParse(JSON.parse(attributes)));
-    const params = {
-        TableName,
-        KeyConditionExpression: query,
-        ExpressionAttributeValues: attributes
-    }
-    //console.log(params,"params");
-    
-    return await DynamoDB.query(params).promise()
-    .catch(e=>{throw new Error("Error: "+e)});
-}
-
-/*function makeQueryByParamsSended(params){
-    let query= "";
-    let attribute ="";
-    
-    const { ColorEquals, raceEquals, nameEquals, typeOfPetEquals } = params; //cambiar esto por un switch case
-    if(ColorEquals!==null && ColorEquals!=="" && ColorEquals!==undefined){
-        query = sumQuery(query,"color",ColorEquals);
-        attribute = sumParams(attribute,"color",ColorEquals);
-    }
-    if(raceEquals!==null && raceEquals!=="" && raceEquals!==undefined){
-        query = sumQuery(query,"race",raceEquals);
-        attribute = sumParams(attribute,"race",raceEquals);
-    }
-    if(nameEquals!==null && nameEquals!==""  && nameEquals!==undefined){
-        query = sumQuery(query,"name",nameEquals);
-        attribute = sumParams(attribute,"name",nameEquals);
-    }
-    if(typeOfPetEquals!==null && typeOfPetEquals!==""  && typeOfPetEquals!==undefined){
-        query = sumQuery(query,"type",typeOfPetEquals);
-        attribute = sumParams(attribute,"type",typeOfPetEquals);
-    }
-    console.log(attribute.split(","),"attribute");
-    
-    return {query,attribute};
-}
-
-
-function sumQuery(query,param,value){
-    if(query==""){
-        query=`:${param} = ${value}`;
-    }else{
-        query+=`and :${param} = ${value}`;
-    }
-    return query;
-}
-
-function sumParams(param, filter,value){ /*se que no se debe hacer asi pero no se como mas pasar parametros opcionales en una consulta de dynamo*//*
-    if(param==""){                      // es esto o traer todos los campos y filtrarlos con el backend.
-        param = `':${filter}': '${value}' `;
-    }else{
-        param += `, ':${filter}':'${value}'`;
-    }
-    return param;
-}
-
-function ExpressionAttributeValuesParse(attr){
-    let expressions ="";
-    attr.foreach((a)=>{
-        expressions+= `${a.filter} : ${a.value} ,`; 
-    });
-    
-    return expressions;
-}*/
 
 
 /*
