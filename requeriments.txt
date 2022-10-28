@@ -21,7 +21,8 @@ Requerimientos técnicos:
     Documentar toda la API haciendo uso de swagger          //T
 
 
-
+crear el sns correctamente
+enviar evento de pet adoptado
 
 
     // verificar que se borre un parametro con un id existente

@@ -1,7 +1,12 @@
 const TablePet = process.env.TABLA_NAME_PET;
 const TableEntity = process.env.TABLA_NAME_ENTITY;
+const TopicArnSns = process.env.TOPIC_ARN_SNS;
+
 const AWS = require('aws-sdk');
 const DynamoDB = new AWS.DynamoDB.DocumentClient();
+const AWS_SNS = new AWS.SNS({apiVersion: '2010-03-31'});
+
+
 
 exports.handler = async (event)=>{
     const body = JSON.parse(event.body); 
@@ -25,7 +30,7 @@ exports.handler = async (event)=>{
         }
         
         await adoptPet(petId);
-        return response(200,true,"Actualizado Correctamente");
+        return response(200,true,"Mascota Adoptada Correctamente");
         
     } catch (error) {
         console.log(error);
@@ -45,12 +50,14 @@ async function adoptPet(petId){
         ExpressionAttributeNames: { "#state": "state" },
         ExpressionAttributeValues: {
             ":status": "Happy",
-        }
+        },
+        ReturnValues: "ALL_NEW"
     };
 
-    return await DynamoDB.update(params).promise()
+    const pet = await DynamoDB.update(params).promise()
     .catch(e=>{throw new Error("Error :"+e)});
     
+    await EmailNotification(pet.Attributes);
 }
 
 async function checkEntity(entityId){
@@ -88,48 +95,16 @@ const response = (status,ok,body)=>{
         })
     }
 }
-async function adoptPet(petId){
-    const params = {
-        TableName: TablePet,
-        Key: { "id": petId },
-        UpdateExpression: "set #state = :status",
-        ExpressionAttributeNames: { "#state": "state" },
-        ExpressionAttributeValues: {
-            ":status": "Happy",
-        }
-    };
 
-    return await DynamoDB.update(params).promise()
-    .catch(e=>{throw new Error("Error :"+e)});
+async function EmailNotification(pet){
+    try{
+        const params = {
+            Message: `hola, la mascota ${pet.name} de rasa: ${pet.race} fue adoptada.`,
+            TopicArn:TopicArnSns
+        };
     
-}
-
-async function checkEntity(entityId){
-    const params = {
-        TableName:TableEntity,
-        KeyConditionExpression: 'id = :entityId ',
-        ExpressionAttributeValues: {
-            ':entityId': entityId
-        }
+        return await AWS_SNS.publish(params).promise();
+    }catch(error){
+        console.log(error);
     }
-    const entity =  (await DynamoDB.query(params).promise()).Items
-    .catch(e=>{throw new Error("Error: "+e)});
-    if(entity.type!="user" || entity.length==0){
-        throw new Error("Solo Los Usuarios Pueden Adoptar Mascotas");
-    }
-    return entity;
-}
-
-async function searchPet(petId){
-    
-    const params = {
-        TableName:TablePet,
-        KeyConditionExpression: 'id = :petId ',
-        ExpressionAttributeValues: {
-            ':petId': petId
-        }
-    }
-    return await DynamoDB.query(params).promise()
-    .catch(e=>{throw new Error("Error: "+e)});
-
 }
