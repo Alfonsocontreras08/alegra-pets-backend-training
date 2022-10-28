@@ -10,8 +10,9 @@ exports.handler = async (event)=>{
     * raceEquals=
     * nameEquals=
     * typeOfPetEquals=
+    * entityOwnerEquals=
     */
-    const { petId, ColorEquals, raceEquals, nameEquals, typeOfPetEquals } = event.queryStringParameters || {petId:null, ColorEquals:null, raceEquals:null, nameEquals:null, typeOfPetEquals:null};
+    const { petId } = event.queryStringParameters;
     let data;
     
     if(event.queryStringParameters===null){
@@ -21,8 +22,7 @@ exports.handler = async (event)=>{
             data = await searchById(petId);
         }else{
             //data = await searchCustom({ ColorEquals, raceEquals, nameEquals, typeOfPetEquals });
-            data = await searchCustom2({ ColorEquals, raceEquals, nameEquals, typeOfPetEquals });
-            
+            data = await searchCustom2(event.queryStringParameters);
         }
     }
 
@@ -73,9 +73,10 @@ async function searchById(petId){
 }
 
 async function searchCustom2(queryParams){
-    const { ColorEquals, raceEquals, nameEquals, typeOfPetEquals } = queryParams;
+    const { ColorEquals, raceEquals, nameEquals, typeOfPetEquals, entityOwnerEquals } = queryParams;
     let data = (await searchAll()).Items;
     
+    console.log(ColorEquals, raceEquals, nameEquals, typeOfPetEquals, entityOwnerEquals);
     if(ColorEquals!==null && ColorEquals!=="" && ColorEquals!==undefined){
        data = searchInObject(data,"color",ColorEquals);
     }
@@ -86,15 +87,19 @@ async function searchCustom2(queryParams){
        data = searchInObject(data,"name",nameEquals);
     }
     if(typeOfPetEquals!==null && typeOfPetEquals!==""  && typeOfPetEquals!==undefined){
-        data = searchInObject(data,"type",typeOfPetEquals);
+        data = searchInObject(data,"typePet",typeOfPetEquals);
+
+    }if(entityOwnerEquals!==null && entityOwnerEquals!==""  && entityOwnerEquals!==undefined){
+        data = searchInObject(data,"entity_owner",entityOwnerEquals);
     }
     
-    return data;
+    return { Items:data };
 }
 
 function searchInObject(obj,param,value){
     return obj.filter((e)=>{
         if(e[param] == value){
+            console.log('coincide',e);
             return e;
         }
     });
