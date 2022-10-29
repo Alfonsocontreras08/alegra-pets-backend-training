@@ -8,21 +8,14 @@
 Situación:
 Alegra requiere una plataforma que le permita a las fundaciones de animales gestionar a sus animales en adopción. Dicha plataforma necesita una API disponible al publico, con el dominio "almost-training.alegra.com" que le permita a los consumidores:
 
-    Consultar todas las mascotas de una fundación.  //T
+   
 
 Requerimientos técnicos:
 
     La API debe contar con una lambda authorizer que funcione como modelo de autenticación para acceder a cualquiera de los endpoints. //T
 
-    La API puede ser consumida por multiples usuarios/fundaciones, cada usuario/fundación solo debería poder acceder a las mascotas de su fundación.        //T
-
-    Cuando se adopte una mascota, se debe emitir un evento de SNS llamado "pet-happy" que notifique al correo de tu líder la adopción de dicha mascota. Una mascota será considerada "adoptada" cuando el estado de la mascota sea "happy".         //T
-
     Documentar toda la API haciendo uso de swagger          //T
 
-
-crear el sns correctamente
-enviar evento de pet adoptado
 
 
     // verificar que se borre un parametro con un id existente

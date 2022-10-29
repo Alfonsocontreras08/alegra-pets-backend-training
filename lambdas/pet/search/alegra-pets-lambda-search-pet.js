@@ -12,7 +12,7 @@ exports.handler = async (event)=>{
     * typeOfPetEquals=
     * entityOwnerEquals=
     */
-    const { petId } = event.queryStringParameters;
+    const { petId } = event.queryStringParameters|| { petId:null };
     let data;
     
     if(event.queryStringParameters===null){

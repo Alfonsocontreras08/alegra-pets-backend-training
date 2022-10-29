@@ -27,6 +27,8 @@ exports.handler = async (event)=>{
         const pet = await searchPet(petId)
         if(pet.Items.length==0){
             return response(400,false,"El Animal No Existe");
+        }else if(pet.Items[0].state=="Happy"){
+            return response(400,false,"El Animal Ya fue Adoptado");
         }
         
         await adoptPet(petId);
