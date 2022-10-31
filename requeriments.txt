@@ -12,13 +12,6 @@ Alegra requiere una plataforma que le permita a las fundaciones de animales gest
 
 Requerimientos técnicos:
 
-    La API debe contar con una lambda authorizer que funcione como modelo de autenticación para acceder a cualquiera de los endpoints. //T
+    
 
-    Documentar toda la API haciendo uso de swagger          //T
-
-
-
-    // verificar que se borre un parametro con un id existente
-    //verificar funcionamiento de entity-search
-    // verificar que no se guarde un pet con un id de entidad falsa
-    // verificar en general todos los mensajes de error
+   
