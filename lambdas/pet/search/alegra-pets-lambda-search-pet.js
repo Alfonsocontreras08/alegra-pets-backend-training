@@ -27,7 +27,7 @@ exports.handler = async (event)=>{
     }
 
     
-    if(!data.Items){
+    if(!data.Items[0]){
         
         data = "No se Encontraron Resultados con los parametros ingresados"
         
