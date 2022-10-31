@@ -1,37 +1,17 @@
-/*const TableName = process.env.TABLA_NAME;
-const AWS = require('aws-sdk');
-const { v4:uuid } = require("uuid");
-const DynamoDB = new AWS.DynamoDB.DocumentClient();
-const lambda = new AWS.Lambda();
-const NEXT_STEP_LAMBDA = process.env.NEXT_STEP_LAMBDA;
-
-function callNextStep(){
-    if(NEXT_STEP_LAMBDA !== null && NEXT_STEP_LAMBDA !== undefined ){
-        console.log("pasa el middleware");
-        lambda.invoke({
-            FunctionName:NEXT_STEP_LAMBDA,
-            InvocationType: "Event"
-        }, function(e, d){
-            if(e){
-                console.error("invocacion fallida",e);
-            }
-        });
-    }
-}*/
-const ENTITY_TABLE = process.env.TABLA_NAME;
-const AWS = require('aws-sdk');
-const DynamoDB = new AWS.DynamoDB.DocumentClient();
-const lambda = new AWS.Lambda();
 
 exports.handler =  function(event, context, callback) {
     var token = event.authorizationToken;
-    console.log(event);
+    var tmp = event.methodArn.split(':');
+    var apiGatewayArnTmp = tmp[5].split('/');
+    
+    // Create wildcard resource
+    var resource = tmp[0] + ":" + tmp[1] + ":" + tmp[2] + ":" + tmp[3] + ":" + tmp[4] + ":" + apiGatewayArnTmp[0] + '/*/*'; 
     switch (token) {
         case 'allow':
-            callback(null, generatePolicy('user', 'Allow', event.methodArn));
+            callback(null, generatePolicy('user', 'Allow', resource));
             break;
         case 'deny':
-            callback(null, generatePolicy('user', 'Deny', event.methodArn));
+            callback(null, generatePolicy('user', 'Deny', resource));
             break;
         case 'unauthorized':
             callback("Unauthorized");   // Return a 401 Unauthorized response
@@ -40,7 +20,6 @@ exports.handler =  function(event, context, callback) {
             callback("Error: Invalid token"); // Return a 500 Invalid token response
     }
 };
-
 // Help function to generate an IAM policy
 var generatePolicy = function(principalId, effect, resource) {
     var authResponse = {};
